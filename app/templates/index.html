@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Videos</title>
+</head>
+<body>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form }}
+  <button type="submit">Submit</button>
+</form>
+
+{% for video in videos %}
+    <video width="640" height="360" poster="{{ MEDIA_URL }}{{ video.preview_img.image }}" controls>
+        {% if video.video_mp4 %}
+            <source src="{{ MEDIA_URL }}{{ video.video_mp4.url }}" type="video/mp4">
+        {% endif %}
+        {% if video.video_webm %}
+            <source src="{{ MEDIA_URL }}{{ video.video_webm.url }}" type="video/webm">
+        {% endif %}
+    </video>
+{% endfor %}
+
+</body>
+</html>
