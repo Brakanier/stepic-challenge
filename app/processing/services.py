@@ -11,26 +11,27 @@ from video import models
 
 def create_preview(video_id: int):
     video_model = models.Video.objects.get(id=video_id)
-    image_io = io.BytesIO()
 
-    # create thumbnail
-    with editor.VideoFileClip(video_model.raw_video.path) as video:
-        frame = video.get_frame(video.duration // 2)
-        image = Image.fromarray(frame)
-        image.thumbnail((640, 360), Image.ANTIALIAS)
-        image.save(image_io, format='JPEG')
+    with io.BytesIO() as image_io:
+        # create thumbnail
+        with editor.VideoFileClip(video_model.raw_video.path) as video:
+            frame = video.get_frame(video.duration // 2)
+            image = Image.fromarray(frame)
+            image.thumbnail((640, 360), Image.ANTIALIAS)
+            image.save(image_io, format='JPEG')
 
-    basename, _ = os.path.splitext(os.path.basename(video_model.raw_video.path))
+        basename, _ = os.path.splitext(os.path.basename(video_model.raw_video.path))
 
-    file = InMemoryUploadedFile(
-        file=image_io,
-        field_name=None,
-        name=f'{basename}_preview.jpg',
-        content_type='image/jpeg',
-        size=image_io.tell,
-        charset=None)
+        file = InMemoryUploadedFile(
+            file=image_io,
+            field_name=None,
+            name=f'{basename}_preview.jpg',
+            content_type='image/jpeg',
+            size=image_io.tell,
+            charset=None
+        )
 
-    video_model.set_preview(file)
+        video_model.set_preview(file)
 
 
 def encode_to_mp4(video_id: int):
@@ -53,7 +54,9 @@ def encode_to_mp4(video_id: int):
         file_name_for_save = filename
         path = os.path.join(location, filename)
 
-    new_video.write_videofile(path)
+    temp_audiofile = os.path.join(location, f'{basename}.mp3')
+
+    new_video.write_videofile(path, temp_audiofile=temp_audiofile)
     video_model.set_video_mp4_path(file_name_for_save)
 
 
@@ -77,5 +80,7 @@ def encode_to_webm(video_id: int):
         file_name_for_save = filename
         path = os.path.join(location, filename)
 
-    new_video.write_videofile(path)
+    temp_audiofile = os.path.join(location, f'{basename}.mp3')
+
+    new_video.write_videofile(path, temp_audiofile=temp_audiofile)
     video_model.set_video_webm_path(file_name_for_save)

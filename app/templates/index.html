@@ -6,6 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Videos</title>
+    {% load static %}
 </head>
 <body>
 <form method="post" enctype="multipart/form-data">
@@ -15,7 +16,17 @@
 </form>
 
 {% for video in videos %}
-    <video width="640" height="360" poster="{{ MEDIA_URL }}{{ video.preview_img.image }}" controls>
+    <video
+            width="640"
+            height="360"
+
+            {% if video.preview_img %}
+            poster="{{ MEDIA_URL }}{{ video.preview_img.url }}"
+            {% else %}
+            poster="{% static 'loading.png' %}"
+            {% endif %}
+
+            controls>
         {% if video.video_mp4 %}
             <source src="{{ MEDIA_URL }}{{ video.video_mp4.url }}" type="video/mp4">
         {% endif %}

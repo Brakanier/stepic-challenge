@@ -21,7 +21,6 @@ class Videos(views.View):
             else:
                 logic.download_video(form.cleaned_data['video_url'])
 
-            new_form = forms.UploadForm()
-            return render(request, 'index.html', {'form': new_form})
+            return render(request, 'index.html', {'form': forms.UploadForm(), 'videos': selectors.video_all()})
 
         return render(request, 'index.html', {'form': form})
