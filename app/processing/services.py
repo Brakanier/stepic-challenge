@@ -1,5 +1,6 @@
 import io
 import os
+import pathlib
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image
@@ -50,12 +51,15 @@ def encode_to_mp4(video_id: int) -> None:
     if upload_to:
         file_name_for_save = f'{upload_to}/{filename}'
         path = os.path.join(location, upload_to, filename)
+        dir_path = os.path.join(location, upload_to)
     else:
         file_name_for_save = filename
         path = os.path.join(location, filename)
+        dir_path = location
 
     temp_audiofile = os.path.join(location, f'{basename}.mp3')
 
+    create_dirs(dir_path)
     new_video.write_videofile(path, temp_audiofile=temp_audiofile)
     video_model.set_video_mp4_path(file_name_for_save)
 
@@ -76,11 +80,18 @@ def encode_to_webm(video_id: int) -> None:
     if upload_to:
         file_name_for_save = f'{upload_to}/{filename}'
         path = os.path.join(location, upload_to, filename)
+        dir_path = os.path.join(location, upload_to)
     else:
         file_name_for_save = filename
         path = os.path.join(location, filename)
+        dir_path = location
 
     temp_audiofile = os.path.join(location, f'{basename}.mp3')
 
+    create_dirs(dir_path)
     new_video.write_videofile(path, temp_audiofile=temp_audiofile)
     video_model.set_video_webm_path(file_name_for_save)
+
+
+def create_dirs(path: str):
+    pathlib.Path(path).mkdir(parents=True, exist_ok=True)
