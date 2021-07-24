@@ -7,7 +7,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from video.services import logic
 
 
-def download_video(url: str):
+def download_video(url: str) -> None:
     with requests.get(url, stream=True) as r:
         r.raise_for_status()
         file_name = re.findall("filename=(.+)", r.headers['content-disposition'])[0]

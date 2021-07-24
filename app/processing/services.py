@@ -9,7 +9,7 @@ from moviepy.video.fx import resize
 from video import models
 
 
-def create_preview(video_id: int):
+def create_preview(video_id: int) -> None:
     video_model = models.Video.objects.get(id=video_id)
 
     with io.BytesIO() as image_io:
@@ -34,7 +34,7 @@ def create_preview(video_id: int):
         video_model.set_preview(file)
 
 
-def encode_to_mp4(video_id: int):
+def encode_to_mp4(video_id: int) -> None:
     video_model = models.Video.objects.get(id=video_id)
 
     video = editor.VideoFileClip(video_model.raw_video.path)
@@ -60,7 +60,7 @@ def encode_to_mp4(video_id: int):
     video_model.set_video_mp4_path(file_name_for_save)
 
 
-def encode_to_webm(video_id: int):
+def encode_to_webm(video_id: int) -> None:
     video_model = models.Video.objects.get(id=video_id)
 
     video = editor.VideoFileClip(video_model.raw_video.path)
