@@ -1,9 +1,8 @@
 import uuid
 
 from django.core import files
-
-from video import models, tasks
 from processing import tasks as processing_tasks
+from video import models, tasks
 
 
 def create_video(file: files.File) -> None:

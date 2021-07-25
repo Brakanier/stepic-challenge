@@ -1,0 +1,63 @@
+version: '3.7'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    hostname: app
+    env_file:
+      - .env
+    expose:
+      - 8000
+    links:
+      - db
+    command: uwsgi --ini /opt/stepik/deploy/uwsgi.conf
+    volumes:
+    - ./app:/opt/stepik/app
+    - ./deploy:/opt/stepik/deploy
+    depends_on:
+      - db
+      - rabbit
+      - celery-worker
+
+  db:
+    image: mysql:8.0.4
+    env_file:
+      - .env
+    expose:
+      - 3306
+
+  rabbit:
+    hostname: rabbit
+    image: rabbitmq:3.8.9-alpine
+    ports:
+    - 5672:5672
+
+  celery-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    links:
+      - rabbit
+      - db
+    depends_on:
+      - rabbit
+      - db
+    command: /usr/local/bin/celery -A app worker --loglevel=INFO --concurrency=1 -E -Q celery -n default
+    volumes:
+      - ./app:/opt/stepik/app
+
+  nginx:
+    image: nginx:1.19-alpine
+    ports:
+      - 8000:80
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/nginx.conf
+      - ./app/media:/media
+      - ./app/static:/static
+      - ./app/static_custom:/static_custom
+    depends_on:
+      - app

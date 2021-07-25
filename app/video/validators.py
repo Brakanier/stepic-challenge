@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.core import files, exceptions
+from django.core import exceptions, files
 
 
 def size_validator(value: files.File):

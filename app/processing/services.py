@@ -3,10 +3,9 @@ import os
 import pathlib
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from PIL import Image
 from moviepy import editor
 from moviepy.video.fx import resize
-
+from PIL import Image
 from video import models
 
 

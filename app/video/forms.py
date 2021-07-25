@@ -1,6 +1,5 @@
 from django import forms
-from django.core import validators, exceptions
-
+from django.core import exceptions, validators
 from video import validators as video_validators
 
 

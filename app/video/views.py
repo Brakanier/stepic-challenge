@@ -1,6 +1,5 @@
-from django.shortcuts import render
 from django import views
-
+from django.shortcuts import render
 from video import forms
 from video.services import logic, selectors
 

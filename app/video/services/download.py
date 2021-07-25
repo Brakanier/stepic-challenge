@@ -1,9 +1,8 @@
 import io
 import re
+
 import requests
-
 from django.core.files.uploadedfile import InMemoryUploadedFile
-
 from video.services import logic
 
 

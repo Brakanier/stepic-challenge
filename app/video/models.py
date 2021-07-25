@@ -1,7 +1,6 @@
-from PIL import Image
-from django.db import models
-
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.db import models
+from PIL import Image
 
 
 class Video(models.Model):

@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 
+import kombu
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -29,8 +31,20 @@ ALLOWED_HOSTS = []
 
 
 # Env settings
-USE_CELERY = bool(os.environ.get('USE_CELERY', ''))
 MAX_VIDEO_SIZE = int(os.environ.get('MAX_VIDEO_SIZE', '128'))
+
+
+# Celery settings
+USE_CELERY = bool(os.environ.get('USE_CELERY', ''))
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_BROKER_URL = 'amqp://{user}:{password}@{host}:{port}'.format(
+    user=os.environ.get('RABBITMQ_DEFAULT_USER'),
+    password=os.environ.get('RABBITMQ_DEFAULT_PASS'),
+    host=os.environ.get('RABBITMQ_HOST'),
+    port=5672
+)
+CELERY_RESULT_EXPIRES = 14 * 24 * 60 * 60  # 14 days
+CELERY_WORKER_PREFETCH_MULTIPLIER = 1
 
 
 # Application definition
@@ -83,8 +97,12 @@ WSGI_APPLICATION = 'app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': '',
+        'HOST': 'db',
+        'PORT': '3306',
     }
 }
 
