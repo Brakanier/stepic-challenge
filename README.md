@@ -4,6 +4,8 @@
 ```text
 git clone
 
+rename .env.example > .env
+
 make up
 make migrate
 
